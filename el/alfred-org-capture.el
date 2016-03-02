@@ -33,6 +33,23 @@
 ;; Alexander Baier
 ;; Damon Haley
 
+;;; Use org-mac to get link context and insert it to the captured item
+(add-hook 'org-capture-prepare-finalize-hook
+          (lambda ()
+            (when (equal
+                   (cdr (assoc 'name (frame-parameters (selected-frame))))
+                   "remember")
+	      (progn
+		(goto-char (point-max))
+		(call-interactively 'org-mac-grab-link)))))
+
+;;; Delete frame when capture is done
+(add-hook 'org-capture-after-finalize-hook
+          (lambda ()
+            (when (equal
+                   (cdr (assoc 'name (frame-parameters (selected-frame))))
+                   "remember")
+              (delete-frame))))
 
 ;;; Code:
 (defun make-orgcapture-frame ()
