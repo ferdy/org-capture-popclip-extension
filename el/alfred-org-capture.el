@@ -33,6 +33,8 @@
 ;; Alexander Baier
 ;; Damon Haley
 
+(defvar org-mac-context nil)
+
 ;;; Use org-mac to get link context and insert it to the captured item
 (add-hook 'org-capture-prepare-finalize-hook
           (lambda ()
@@ -41,6 +43,11 @@
                    "remember")
 	      (progn
 		(goto-char (point-max))
+		(if org-mac-context
+		    (progn
+		      (insert (concat org-mac-context "\n"))
+		      (setq org-mac-context nil))
+		  nil)
 		(call-interactively 'org-mac-grab-link)))))
 
 ;;; Delete frame when capture is done
@@ -52,9 +59,10 @@
               (delete-frame))))
 
 ;;; Code:
-(defun make-orgcapture-frame ()
+(defun make-orgcapture-frame (&optional mytext)
   "Create a new frame and run org-capture."
   (interactive)
+  (setq org-mac-context mytext)
   (make-frame '((name . "remember") (width . 80) (height . 16)
                 (top . 400) (left . 300)
                 (font . "-apple-Monaco-medium-normal-normal-*-13-*-*-*-m-0-iso10646-1")
